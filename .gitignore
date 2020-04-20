@@ -1,3 +1,6 @@
+#Oracle instantclient
+instantclient/
+
 # Logs
 logs
 *.log
