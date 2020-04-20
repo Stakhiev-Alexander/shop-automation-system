@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Shop</title>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>     
+    <style>
+        .tabs .tab a:hover, .tabs .tab a.active {
+            background-color: transparent;
+            color: #dd2c00;
+        }
+
+        .tabs .tab a {
+            color: #dd2c00;
+        }
+
+        .tabs .indicator {
+            background-color: #dd2c00;
+        }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <div class="col s12">
+          <ul class="tabs">
+            <li class="tab col s3"><a class="active" href="#CHARGES">CHARGES</a></li>
+            <li class="tab col s3"><a href="#EXPENSE_ITEMS">EXPENSE ITEMS</a></li>
+            <li class="tab col s3"><a href="#SALES">SALES</a></li>
+            <li class="tab col s3"><a href="#WAREHOUSES">WAREHOUSES</a></li>
+          </ul>
+        </div>
+        <div id="CHARGES" class="col s12">
+            <table id="ChargesTable" class="highlight">
+                <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Amount</th>
+                      <th>Charge date</th>
+                      <th>Expense item ID</th>
+                      <th width="10px"></th>
+                      <th width="10px"><i id="charges_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
+                  </tr>
+                </thead>
+        
+                <tbody></tbody>
+              </table>                    
+        </div>
+        <div id="EXPENSE_ITEMS" class="col s12">
+            <table id="ExpenseItemsTable" class="highlight">
+                <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th width="10px"></th>
+                      <th width="10px"><i id="expense_items_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
+                  </tr>
+                </thead>
+        
+                <tbody></tbody>
+              </table>           
+        </div>
+        <div id="SALES" class="col s12">
+            <table id="SalesTable" class="highlight">
+                <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Amount</th>
+                      <th>Quantity</th>
+                      <th>Sale date</th>
+                      <th>Warehouse ID</th>
+                      <th width="10px"></th>
+                      <th width="10px"><i id="sales_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
+                  </tr>
+                </thead>
+        
+                <tbody></tbody>
+              </table>  
+        </div>
+        <div id="WAREHOUSES" class="col s12">
+            <table id="WarehousesTable" class="highlight">
+                <thead>
+                  <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Quantity</th>
+                      <th>Amount</th>
+                      <th width="10px"></th>
+                      <th width="10px"><i id="warehouses_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
+                  </tr>
+                </thead>
+        
+                <tbody></tbody>
+              </table>  
+        </div>
+      </div>
+    
+    <script src=mainWindow.js></script>
+</body>
+</html>
