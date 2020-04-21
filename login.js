@@ -49,29 +49,27 @@ async function loginBtnHandler() {
             const prom = argon2.verify(hash, password.value)
             prom.then((res) => {
               if (res) {
-                console.log("yes")
-                console.log(ipcRenderer)
                 ipcRenderer.send('show-main')
               } else {
-                console.log("no1")
+                handleWrongInput('The username or password you entered is incorrect!', 2500)
               }
             },
             (err) => {
-              console.log("no2")
+              handleWrongInput('The username or password you entered is incorrect!', 2500)
             })
           } catch (err) {
-            console.log("no3")
+            handleWrongInput('The username or password you entered is incorrect!', 2500)
           }
         }
       );
     }
   );
 }
-    
-    async function handleWrongInput () { 
-      
-    }
-    
+
+function handleWrongInput(message, duration) {
+  M.toast({html: message}, duration);
+}    
+
 function doRelease(connection) {
   connection.close(
     function(err) {

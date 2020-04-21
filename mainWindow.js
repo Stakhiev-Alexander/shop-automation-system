@@ -1,6 +1,7 @@
 var el = document.querySelector('.tabs');
 var instance = M.Tabs.init(el, {});
 let config = require('./config.js');
+var oracledb = require('oracledb');
 
 updateChargesTable();
 updateExpenseItemsTable();
@@ -10,7 +11,6 @@ updateWarehousesTable();
 
 function updateChargesTable() {
   clearTable('ChargesTable');
-  var oracledb = require('oracledb');
 
   oracledb.getConnection ( 
     {
@@ -42,11 +42,11 @@ function updateChargesTable() {
       );
     }
   );
+  displayAddButtons();
 }
 
 function updateExpenseItemsTable() {
   clearTable('ExpenseItemsTable');
-  var oracledb = require('oracledb');
 
   oracledb.getConnection ( 
     {
@@ -78,11 +78,11 @@ function updateExpenseItemsTable() {
       );
     }
   );
+  displayAddButtons();
 }
 
 function updateSalesTable() {
   clearTable('SalesTable');
-  var oracledb = require('oracledb');
 
   oracledb.getConnection ( 
     {
@@ -114,11 +114,11 @@ function updateSalesTable() {
       );
     }
   );
+  displayAddButtons();
 }
 
 function updateWarehousesTable() {
   clearTable('WarehousesTable');
-  var oracledb = require('oracledb');
 
   oracledb.getConnection ( 
     {
@@ -150,6 +150,7 @@ function updateWarehousesTable() {
       );
     }
   );
+  displayAddButtons();
 }
 
 function doRelease(connection) {
@@ -163,7 +164,7 @@ function doRelease(connection) {
 }
 
 function addRowToChargesTable(idValue, amountValue, chargeDateValue, expenseItemValue) {                 
-  var chargesTable = document.getElementById("ChargesTable"); 
+  var chargesTable = document.getElementById("ChargesTable").getElementsByTagName('tbody')[0]; 
   
   // insert new row at the bottom of the table 
   var NewRow = chargesTable.insertRow(-1); 
@@ -177,12 +178,12 @@ function addRowToChargesTable(idValue, amountValue, chargeDateValue, expenseItem
   amountCell.innerHTML = amountValue.toString(); 
   chargeDateCell.innerHTML = chargeDateValue.toDateString(); 
   expenseItemCell.innerHTML = expenseItemValue.toString(); 
-  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteRow(this)">delete</i>'; 
+  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDateBase(this)">delete</i>'; 
   editCell.innerHTML = '<i class="material-icons">mode_edit</i>'; 
 } 
 
 function addRowToExpenseItemsTable(idValue, nameValue) {                 
-  var expenseItemsTable = document.getElementById("ExpenseItemsTable"); 
+  var expenseItemsTable = document.getElementById('ExpenseItemsTable').getElementsByTagName('tbody')[0];
   
   // insert new row at the bottom of the table 
   var NewRow = expenseItemsTable.insertRow(-1); 
@@ -192,12 +193,12 @@ function addRowToExpenseItemsTable(idValue, nameValue) {
   var editCell = NewRow.insertCell(3); 
   idCell.innerHTML = idValue.toString(); 
   nameCell.innerHTML = nameValue.toString(); 
-  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteRow(this)">delete</i>'; 
+  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDateBase(this)">delete</i>'; 
   editCell.innerHTML = '<i class="material-icons">mode_edit</i>'; 
 }
 
 function addRowToSalesTable(idValue, amountValue, quantityValue, saleDateValue, warehouseIdValue) {                 
-  var salesTable = document.getElementById("SalesTable"); 
+  var salesTable = document.getElementById("SalesTable").getElementsByTagName('tbody')[0]; 
   
   // insert new row at the bottom of the table 
   var NewRow = salesTable.insertRow(-1); 
@@ -213,12 +214,12 @@ function addRowToSalesTable(idValue, amountValue, quantityValue, saleDateValue, 
   quantityCell.innerHTML = quantityValue.toString(); 
   saleDateCell.innerHTML = saleDateValue.toDateString(); 
   warehouseIdCell.innerHTML = warehouseIdValue.toString(); 
-  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteRow(this)">delete</i>'; 
+  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDateBase(this)">delete</i>'; 
   editCell.innerHTML = '<i class="material-icons">mode_edit</i>'; 
 }
 
 function addRowToWarehousesTable(idValue, nameValue, quantityValue, amountValue) {                 
-  var warehousesTable = document.getElementById("WarehousesTable"); 
+  var warehousesTable = document.getElementById("WarehousesTable").getElementsByTagName('tbody')[0]; 
   
   // insert new row at the bottom of the table 
   var NewRow = warehousesTable.insertRow(-1); 
@@ -232,14 +233,11 @@ function addRowToWarehousesTable(idValue, nameValue, quantityValue, amountValue)
   nameCell.innerHTML = nameValue.toString(); 
   quantityCell.innerHTML = quantityValue.toString(); 
   amountCell.innerHTML = amountValue.toString(); 
-  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteRow(this)">delete</i>'; 
+  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDateBase(this)">delete</i>'; 
   editCell.innerHTML = '<i class="material-icons">mode_edit</i>'; 
 }
 
-function deleteRow(r) {
-  var i = r.parentNode.parentNode.rowIndex;
-  document.getElementById(r.parentNode.parentNode.parentNode.parentNode.id).deleteRow(i);
-
+function displayAddButtons() {
   var charges_add_button = document.getElementById("charges_add_button");
   var expense_items_add_button = document.getElementById("expense_items_add_button"); 
   var sales_add_button = document.getElementById("sales_add_button"); 
@@ -250,10 +248,7 @@ function deleteRow(r) {
   warehouses_add_button.style.setProperty('display', 'inline-block');
 }
 
-function addRowMode(r) {
-  var tableId = r.parentNode.parentNode.parentNode.parentNode.id;
-  var changedTable = document.getElementById(tableId); 
-
+function hideAddButtons() {
   var charges_add_button = document.getElementById("charges_add_button");
   var expense_items_add_button = document.getElementById("expense_items_add_button"); 
   var sales_add_button = document.getElementById("sales_add_button"); 
@@ -262,6 +257,47 @@ function addRowMode(r) {
   expense_items_add_button.style.setProperty('display', 'none');
   sales_add_button.style.setProperty('display', 'none');
   warehouses_add_button.style.setProperty('display', 'none');
+}
+
+function deleteFromDateBase(r) {
+  const tableId = r.parentNode.parentNode.parentNode.parentNode.id;
+  const row = r.parentNode.parentNode.cells
+  const id = parseInt(row[0].innerText)
+
+  switch(tableId) {
+    case 'ChargesTable':
+      removeFromCharges(id)
+      setTimeout(() => { updateChargesTable(); }, 300); 
+      break
+    case 'ExpenseItemsTable':
+      removeFromExpenseItems(id)
+      setTimeout(() => { updateExpenseItemsTable(); }, 300);
+      break
+    case 'SalesTable': 
+      removeFromSales(id)
+      setTimeout(() => { updateSalesTable(); }, 300); 
+      break
+    case 'WarehousesTable':
+      removeFromWarehouses(id)  
+      setTimeout(() => { updateWarehousesTable(); }, 300);
+      break
+    default:
+      break;   
+  }
+}
+
+function deleteRow(r) {
+  var i = r.parentNode.parentNode.rowIndex;
+  document.getElementById(r.parentNode.parentNode.parentNode.parentNode.id).deleteRow(i);
+
+  displayAddButtons();
+}
+
+function addRowMode(r) {
+  var tableId = r.parentNode.parentNode.parentNode.parentNode.id;
+  var changedTable = document.getElementById(tableId); 
+
+  hideAddButtons();
 
   var sizeOfRow = 0;
   // insert new row at the bottom of the table  
@@ -276,7 +312,7 @@ function addRowMode(r) {
       idCell.innerHTML = ''; 
       amountCell.innerHTML = '<input id="amountCell" type="text">'; 
       amountCell.focus();
-      chargeDateCell.innerHTML = '<input id="chargeDateCell" type="text">'; 
+      chargeDateCell.innerHTML = '<input id="chargeDateCell" type="date">'; 
       expenseItemCell.innerHTML = '<input id="expenseItemCell" type="text">'; 
       sizeOfRow = 4;
       break
@@ -298,7 +334,7 @@ function addRowMode(r) {
       amountCell.innerHTML = '<input id="amountCell" type="text">'; 
       amountCell.focus();
       quantityCell.innerHTML = '<input id="quantityCell" type="text">'; 
-      saleDateCell.innerHTML = '<input id="saleDateCell" type="text">'; 
+      saleDateCell.innerHTML = '<input id="saleDateCell" type="date">'; 
       warehouseIdCell.innerHTML = '<input id="warehouseIdCell" type="text">'; 
       sizeOfRow = 5;
       break
@@ -335,12 +371,12 @@ function doneAddingRowMode(r) {
       const chargeDateCT = document.getElementById("chargeDateCell").value;
       const expenseItemCT = document.getElementById("expenseItemCell").value;
       insertIntoCharges(amountCT, chargeDateCT, expenseItemCT);
-      updateChargesTable();
+      setTimeout(() => { updateChargesTable(); }, 300);
       break;
     case 'ExpenseItemsTable':
       const nameEIT = document.getElementById("nameCell").value;
       insertIntoExpenseItems(nameEIT);
-      updateExpenseItemsTable();
+      setTimeout(() => { updateExpenseItemsTable(); }, 300);
       break;
     case 'SalesTable':  
       const amountST = document.getElementById("amountCell").value;
@@ -348,43 +384,242 @@ function doneAddingRowMode(r) {
       const saleDateST = document.getElementById("saleDateCell").value;
       const warehouseIdST = document.getElementById("warehouseIdCell").value;
       insertIntoSales(amountST, quantityST, saleDateST, warehouseIdST);
-      updateSalesTable();
+      setTimeout(() => { updateSalesTable(); }, 300);
       break;
     case 'WarehousesTable':  
       const nameWT = document.getElementById("nameCell").value;
       const quantityWT = document.getElementById("quantityCell").value;
       const amountWT = document.getElementById("amountCell").value;
       insertIntoWarehouses(nameWT, quantityWT, amountWT);
-      updateWarehousesTable();
+      setTimeout(() => { updateWarehousesTable(); }, 300);
       break;
     default:
       break;
   }
-
-  deleteRow(r);
 }
 
 function insertIntoCharges(amount, chargeDate, expenseItem) {
-  console.log(amount);
-  console.log(chargeDate);
-  console.log(expenseItem);
+  oracledb.getConnection ( 
+    {
+      user: config.user,
+      password: config.password,
+      connectionString: config.connectionString
+    },
+    function(err, connection) {
+      if (err) {
+        console.error(err.message);
+        return;
+      }
+      connection.execute(
+        'BEGIN insertCHARGES(:camount, :cchargeDate, :cexpenseItem); END;',
+        [parseInt(amount), new Date(chargeDate), parseInt(expenseItem)],
+        function(err, result) {
+          if (err) {
+            console.error(err.message);
+            doRelease(connection);
+            return;
+          }
+          doRelease(connection); 
+        }
+      );
+    }
+  );
 }
 
 function insertIntoExpenseItems(name) {
-  console.log(name);
+  oracledb.getConnection ( 
+    {
+      user: config.user,
+      password: config.password,
+      connectionString: config.connectionString
+    },
+    function(err, connection) {
+      if (err) {
+        console.error(err.message);
+        return;
+      }
+      connection.execute(
+        'BEGIN insertEXPENSE_ITEMS(:einame); END;',
+        [name.toString()],
+        function(err, result) {
+          if (err) {
+            console.error(err.message);
+            doRelease(connection);
+            return;
+          }
+          doRelease(connection); 
+        }
+      );
+    }
+  );
 }
 
 function insertIntoSales(amount, quantity, saleDate, warehouseId) {
-  console.log(amount);
-  console.log(quantity);
-  console.log(saleDate);
-  console.log(warehouseId);
+  oracledb.getConnection ( 
+    {
+      user: config.user,
+      password: config.password,
+      connectionString: config.connectionString
+    },
+    function(err, connection) {
+      if (err) {
+        console.error(err.message);
+        return;
+      }
+      connection.execute(
+        'BEGIN insertSALES(:samount, :squantity, :ssaleDate, :swarehouseId); END;',
+        [parseInt(amount), parseInt(quantity), new Date(saleDate), parseInt(warehouseId)],
+        function(err, result) {
+          if (err) {
+            console.error(err.message);
+            doRelease(connection);
+            return;
+          }
+          doRelease(connection); 
+        }
+      );
+    }
+  );
 }
 
 function insertIntoWarehouses(name, quantity, amount) {
-  console.log(name);
-  console.log(quantity);
-  console.log(amount);
+  oracledb.getConnection ( 
+    {
+      user: config.user,
+      password: config.password,
+      connectionString: config.connectionString
+    },
+    function(err, connection) {
+      if (err) {
+        console.error(err.message);
+        return;
+      }
+      connection.execute(
+        'BEGIN insertWAREHOUSES(:wname, :wquantity, :wamount); END;',
+        [name.toString(), parseInt(quantity), parseInt(amount)],
+        function(err, result) {
+          if (err) {
+            console.error(err.message);
+            doRelease(connection);
+            return;
+          }
+          doRelease(connection); 
+        }
+      );
+    }
+  );
+}
+
+function removeFromCharges(id) {
+  oracledb.getConnection ( 
+    {
+      user: config.user,
+      password: config.password,
+      connectionString: config.connectionString
+    },
+    function(err, connection) {
+      if (err) {
+        console.error(err.message);
+        return;
+      }
+      connection.execute(
+        'BEGIN removeCHARGES(:cid); END;',
+        [parseInt(id)],
+        function(err, result) {
+          if (err) {
+            console.error(err.message);
+            doRelease(connection);
+            return;
+          }
+          doRelease(connection); 
+        }
+      );
+    }
+  );
+}
+
+function removeFromExpenseItems(id) {
+  oracledb.getConnection ( 
+    {
+      user: config.user,
+      password: config.password,
+      connectionString: config.connectionString
+    },
+    function(err, connection) {
+      if (err) {
+        console.error(err.message);
+        return;
+      }
+      connection.execute(
+        'BEGIN removeEXPENSE_ITEMS(:eiid); END;',
+        [parseInt(id)],
+        function(err, result) {
+          if (err) {
+            console.error(err.message);
+            doRelease(connection);
+            return;
+          }
+          doRelease(connection); 
+        }
+      );
+    }
+  );
+}
+
+function removeFromSales(id) {
+  oracledb.getConnection ( 
+    {
+      user: config.user,
+      password: config.password,
+      connectionString: config.connectionString
+    },
+    function(err, connection) {
+      if (err) {
+        console.error(err.message);
+        return;
+      }
+      connection.execute(
+        'BEGIN removeSALES(:sid); END;',
+        [parseInt(id)],
+        function(err, result) {
+          if (err) {
+            console.error(err.message);
+            doRelease(connection);
+            return;
+          }
+          doRelease(connection); 
+        }
+      );
+    }
+  );
+}
+
+function removeFromWarehouses(id) {
+  oracledb.getConnection ( 
+    {
+      user: config.user,
+      password: config.password,
+      connectionString: config.connectionString
+    },
+    function(err, connection) {
+      if (err) {
+        console.error(err.message);
+        return;
+      }
+      connection.execute(
+        'BEGIN removeWAREHOUSES(:wid); END;',
+        [parseInt(id)],
+        function(err, result) {
+          if (err) {
+            console.error(err.message);
+            doRelease(connection);
+            return;
+          }
+          doRelease(connection); 
+        }
+      );
+    }
+  );
 }
 
 function clearTable(tableID) {
