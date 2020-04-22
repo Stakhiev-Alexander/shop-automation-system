@@ -1,0 +1,47 @@
+--delete from charges--
+CREATE OR REPLACE PROCEDURE removeCHARGES(
+    p_id IN CHARGES.ID%TYPE)
+IS
+BEGIN
+
+  DELETE FROM CHARGES WHERE ID=p_id;
+
+  COMMIT;
+
+END;
+
+--delete from expense_items--
+CREATE OR REPLACE PROCEDURE removeEXPENSE_ITEMS(
+    p_id IN EXPENSE_ITEMS.ID%TYPE)
+IS
+BEGIN
+
+  DELETE FROM EXPENSE_ITEMS WHERE ID=p_id;
+
+  COMMIT;
+
+END;
+
+--delete from sales--
+CREATE OR REPLACE PROCEDURE removeSALES(
+    p_id IN SALES.ID%TYPE)
+IS
+BEGIN
+
+  DELETE FROM SALES WHERE ID=p_id;
+
+  COMMIT;
+
+END;
+
+--delete from warehouses--
+CREATE OR REPLACE PROCEDURE removeWAREHOUSES(
+    p_id IN WAREHOUSES.ID%TYPE)
+IS
+BEGIN
+
+  DELETE FROM WAREHOUSES WHERE ID=p_id;
+
+  COMMIT;
+
+END;
