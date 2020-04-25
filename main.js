@@ -84,13 +84,10 @@ const mainMenuTemplate = [
       label: 'File', 
       submenu: [
         {
-          label: 'Add',
+          label: 'Count income',
           click() {
             // createAddWindow();
           }
-        },
-        {
-          label: 'Delete'
         },
         {
           label: 'Quit',

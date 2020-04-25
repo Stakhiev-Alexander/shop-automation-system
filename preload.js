@@ -20,11 +20,3 @@ window.addEventListener('DOMContentLoaded', () => {
     replaceText(`${type}-version`, process.versions[type])
   }
 })
-
-// function loginBtnHandler() {
-//     const uid = document.getElementById("uid")
-//     const password = document.getElementById("password")
-//     const {remote} = require('electron')
-//     document.getElementById("demo1").innerHTML = uid.value;
-//     document.getElementById("demo2").innerHTML = password.value;
-// }

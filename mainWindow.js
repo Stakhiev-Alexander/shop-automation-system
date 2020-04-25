@@ -1,6 +1,15 @@
 var el = document.querySelector('.tabs');
 M.Tabs.init(el, {});
 
+const log4js = require('log4js');
+
+log4js.configure({
+  appenders: { db_access: { type: 'file', filename: 'logs/db_access.log' } },
+  categories: { default: { appenders: ['db_access'], level: 'ALL' } }
+});
+
+const logger = log4js.getLogger('db_access');
+
 let config = require('./config.js');
 var oracledb = require('oracledb');
 
@@ -37,6 +46,7 @@ function updateChargesTable() {
               addRowToChargesTable(result.rows[index][0], result.rows[index][1], result.rows[index][2], result.rows[index][3]);
             } 
           }
+          logger.info('Updated charges table');
           doRelease(connection); 
         }
       );
@@ -73,6 +83,7 @@ function updateExpenseItemsTable() {
               addRowToExpenseItemsTable(result.rows[index][0], result.rows[index][1]);
             } 
           }
+          logger.info('Updated expense items table');
           doRelease(connection); 
         }
       );
@@ -109,6 +120,7 @@ function updateSalesTable() {
               addRowToSalesTable(result.rows[index][0], result.rows[index][1], result.rows[index][2], result.rows[index][3], result.rows[index][4]);
             } 
           }
+          logger.info('Updated sales table');
           doRelease(connection); 
         }
       );
@@ -145,6 +157,7 @@ function updateWarehousesTable() {
               addRowToWarehousesTable(result.rows[index][0], result.rows[index][1], result.rows[index][2], result.rows[index][3]);
             } 
           }
+          logger.info('Updated warehouses table');
           doRelease(connection); 
         }
       );
@@ -178,7 +191,7 @@ function addRowToChargesTable(idValue, amountValue, chargeDateValue, expenseItem
   amountCell.innerHTML = amountValue.toString(); 
   chargeDateCell.innerHTML = chargeDateValue.toDateString(); 
   expenseItemCell.innerHTML = expenseItemValue.toString(); 
-  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDateBase(this)">delete</i>'; 
+  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDataBase(this)">delete</i>'; 
   editCell.innerHTML = '<i class="material-icons" onclick="editMode(this)">mode_edit</i>'; 
 } 
 
@@ -193,7 +206,7 @@ function addRowToExpenseItemsTable(idValue, nameValue) {
   var editCell = NewRow.insertCell(3); 
   idCell.innerHTML = idValue.toString(); 
   nameCell.innerHTML = nameValue.toString(); 
-  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDateBase(this)">delete</i>'; 
+  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDataBase(this)">delete</i>'; 
   editCell.innerHTML = '<i class="material-icons" onclick="editMode(this)">mode_edit</i>'; 
 }
 
@@ -214,7 +227,7 @@ function addRowToSalesTable(idValue, amountValue, quantityValue, saleDateValue, 
   quantityCell.innerHTML = quantityValue.toString(); 
   saleDateCell.innerHTML = saleDateValue.toDateString(); 
   warehouseIdCell.innerHTML = warehouseIdValue.toString(); 
-  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDateBase(this)">delete</i>'; 
+  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDataBase(this)">delete</i>'; 
   editCell.innerHTML = '<i class="material-icons" onclick="editMode(this)">mode_edit</i>'; 
 }
 
@@ -233,7 +246,7 @@ function addRowToWarehousesTable(idValue, nameValue, quantityValue, amountValue)
   nameCell.innerHTML = nameValue.toString(); 
   quantityCell.innerHTML = quantityValue.toString(); 
   amountCell.innerHTML = amountValue.toString(); 
-  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDateBase(this)">delete</i>'; 
+  deleteCell.innerHTML = '<i class="material-icons" onclick="deleteFromDataBase(this)">delete</i>'; 
   editCell.innerHTML = '<i class="material-icons" onclick="editMode(this)">mode_edit</i>'; 
 }
 
@@ -259,7 +272,7 @@ function hideAddButtons() {
   warehouses_add_button.style.setProperty('display', 'none');
 }
 
-function deleteFromDateBase(r) {
+function deleteFromDataBase(r) {
   const tableId = r.parentNode.parentNode.parentNode.parentNode.id;
   const row = r.parentNode.parentNode.cells
   const id = parseInt(row[0].innerText)
@@ -725,9 +738,11 @@ function insertIntoCharges(amount, chargeDate, expenseItem) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to insert into table (CHARGES) ;\n values:' + parseInt(amount) + ', ' + new Date(chargeDate) + ', ' + parseInt(expenseItem) + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Insert into table (CHARGES);\n values:' + parseInt(amount) + ', ' + new Date(chargeDate) + ', ' + parseInt(expenseItem));
           doRelease(connection); 
         }
       );
@@ -753,9 +768,11 @@ function insertIntoExpenseItems(name) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to insert into table (EXPENSE_ITEMS) ;\n values:' + name.toString() + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Insert into table (EXPENSE_ITEMS);\n values:' + name.toString());
           doRelease(connection); 
         }
       );
@@ -781,9 +798,11 @@ function insertIntoSales(amount, quantity, saleDate, warehouseId) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to insert into table (SALES) ;\n values:' + parseInt(amount) + parseInt(quantity) + new Date(saleDate) + parseInt(warehouseId) + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Insert into table (SALES);\n values:' + parseInt(amount) + parseInt(quantity) + new Date(saleDate) + parseInt(warehouseId));
           doRelease(connection); 
         }
       );
@@ -809,9 +828,11 @@ function insertIntoWarehouses(name, quantity, amount) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to insert into table (WAREHOUSES) ;\n values:' + name.toString() + parseInt(quantity) + parseInt(amount) + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Insert into table (WAREHOUSES);\n values:' + name.toString() + parseInt(quantity) + parseInt(amount));
           doRelease(connection); 
         }
       );
@@ -837,9 +858,11 @@ function updateValuesInCharges(id, amount, chargeDate, expenseItem) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to update table (CHARGES) ;\n values:' + parseInt(id) + parseInt(amount) + ', ' + new Date(chargeDate) + ', ' + parseInt(expenseItem) + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Update table (CHARGES);\n values:' + parseInt(id) + parseInt(amount) + ', ' + new Date(chargeDate) + ', ' + parseInt(expenseItem));
           doRelease(connection); 
         }
       );
@@ -865,9 +888,11 @@ function updateValuesInExpenseItems(id, name) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to update table (EXPENSE_ITEMS) ;\n values:' + parseInt(id) + name.toString() + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Update table (EXPENSE_ITEMS);\n values:' + parseInt(id) + name.toString());
           doRelease(connection); 
         }
       );
@@ -893,9 +918,11 @@ function updateValuesInSales(id, amount, quantity, saleDate, warehouseId) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to update table (SALES) ;\n values:' + parseInt(id) + parseInt(amount) + parseInt(quantity) + new Date(saleDate) + parseInt(warehouseId) + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Update table (SALES);\n values:' + parseInt(id) + parseInt(amount) + parseInt(quantity) + new Date(saleDate) + parseInt(warehouseId));
           doRelease(connection); 
         }
       );
@@ -921,9 +948,11 @@ function updateValuesInWarehouses(id, name, quantity, amount) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to update table (WAREHOUSES) ;\n values:' + parseInt(id) + name.toString() + parseInt(quantity) + parseInt(amount) + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Update table (WAREHOUSES);\n values:' + parseInt(id) + name.toString() + parseInt(quantity) + parseInt(amount));
           doRelease(connection); 
         }
       );
@@ -949,9 +978,11 @@ function removeFromCharges(id) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to remove from table (CHARGES) ;\n values:' + parseInt(id) + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Remove from table (CHARGES);\n values:' + parseInt(id));
           doRelease(connection); 
         }
       );
@@ -977,9 +1008,11 @@ function removeFromExpenseItems(id) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to remove from table (EXPENSE_ITEMS) ;\n values:' + parseInt(id) + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Remove from table (EXPENSE_ITEMS);\n values:' + parseInt(id));
           doRelease(connection); 
         }
       );
@@ -1005,9 +1038,11 @@ function removeFromSales(id) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to remove from table (SALES) ;\n values:' + parseInt(id) + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Remove from table (SALES);\n values:' + parseInt(id));
           doRelease(connection); 
         }
       );
@@ -1033,9 +1068,11 @@ function removeFromWarehouses(id) {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to remove from table (WAREHOUSES) ;\n values:' + parseInt(id) + '\nerr_message:' + err.message);
             doRelease(connection);
             return;
           }
+          logger.info('Remove from table (WAREHOUSES);\n values:' + parseInt(id));
           doRelease(connection); 
         }
       );
@@ -1046,38 +1083,4 @@ function removeFromWarehouses(id) {
 function clearTable(tableID) {
   var bodyRef = document.getElementById(tableID).getElementsByTagName('tbody')[0]; 
   bodyRef.innerHTML = '';
-}
-
-function loadExpenseItemsIds() {
-  var ids = [];
-  oracledb.getConnection ( 
-    {
-      user: config.user,
-      password: config.password,
-      connectionString: config.connectionString
-    },
-    function(err, connection) {
-      if (err) {
-        console.error(err.message);
-        return;
-      }
-      connection.execute(
-        'SELECT ID FROM EXPENSE_ITEMS',
-        function(err, result) {
-          if (err) {
-            console.error(err.message);
-            doRelease(connection);
-            return;
-          }
-          result.rows.forEach(element => {
-            ids.push(element[0])
-          });
-          
-          doRelease(connection); 
-        }
-      );
-    }
-  );
-  console.log(ids)
-  return ids;
 }

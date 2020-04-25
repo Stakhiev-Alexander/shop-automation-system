@@ -1,6 +1,16 @@
 const argon2 = require('argon2');
 var ipcRenderer = require('electron').ipcRenderer;
 let config = require('./config.js');
+const log4js = require('log4js');
+
+log4js.configure({
+  appenders: { db_access: { type: 'file', filename: 'logs/db_access.log' } },
+  categories: { default: { appenders: ['db_access'], level: 'ALL' } }
+});
+
+const logger = log4js.getLogger('db_access');
+// logger.warn('warn');
+// logger.info('info');
 
 document.getElementById("loginBtn").addEventListener("click", loginBtnHandler);
 
@@ -29,6 +39,7 @@ async function loginBtnHandler() {
     function(err, connection) {
       if (err) {
         console.error(err.message);
+        logger.error('Failed to connect to db:' + err.message);
         return;
       }
       connection.execute(
@@ -37,6 +48,7 @@ async function loginBtnHandler() {
         function(err, result) {
           if (err) {
             console.error(err.message);
+            logger.error('Failed to login (login = ' + uid.value + ') :' + err.message);
             doRelease(connection);
             return;
           }
@@ -49,16 +61,20 @@ async function loginBtnHandler() {
             const prom = argon2.verify(hash, password.value)
             prom.then((res) => {
               if (res) {
+                logger.info('User logged in (login = ' + uid.value + ')');
                 ipcRenderer.send('show-main')
               } else {
                 handleWrongInput('The username or password you entered is incorrect!', 2500)
+                logger.error('Failed to login (login = ' + uid.value + ') :' + err.message);
               }
             },
             (err) => {
               handleWrongInput('The username or password you entered is incorrect!', 2500)
+              logger.error('Failed to login (login = ' + uid.value + ') :' + err.message);
             })
           } catch (err) {
             handleWrongInput('The username or password you entered is incorrect!', 2500)
+            logger.error('Failed to login (login = ' + uid.value + ') :' + err.message);
           }
         }
       );
