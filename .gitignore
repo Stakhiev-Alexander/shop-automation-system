@@ -1,4 +1,7 @@
-#Oracle instantclient
+# Procedure output folder
+procedures_output/
+
+# Oracle instantclient
 instantclient/
 
 # Logs
