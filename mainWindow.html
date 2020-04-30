@@ -1,135 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Shop</title>
-    <!--Import Google Icon Font-->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <title>Shop</title>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  
+  <style>
+    .tabs .tab a:hover, .tabs .tab a.active {
+      background-color: transparent;
+      color: #dd2c00;
+    }
     
-    <style>
-        .tabs .tab a:hover, .tabs .tab a.active {
-            background-color: transparent;
-            color: #dd2c00;
-        }
-
-        .tabs .tab a {
-            color: #dd2c00;
-        }
-
-        .tabs .indicator {
-            background-color: #dd2c00;
-        }
-    </style>
+    .tabs .tab a {
+      color: #dd2c00;
+    }
+    
+    .tabs .indicator {
+      background-color: #dd2c00;
+    }
+    
+    .tabs {
+      display:-webkit-flex;
+      display: -ms-flexbox;
+      display: flex
+    }
+  </style>
 </head>
 <body>
-    <div class="row">
-        <div class="col s12">
-          <ul class="tabs">
-            <li class="tab col s3"><a class="active" href="#CHARGES">CHARGES</a></li>
-            <li class="tab col s3"><a href="#EXPENSE_ITEMS">EXPENSE ITEMS</a></li>
-            <li class="tab col s3"><a href="#SALES">SALES</a></li>
-            <li class="tab col s3"><a href="#WAREHOUSES">WAREHOUSES</a></li>
-            <li class="tab col s3"><a href="#PROCEDURES">PROCEDURES</a></li>
-          </ul>
-        </div>
-        <div id="CHARGES" class="col s12">
-            <table id="ChargesTable" class="highlight">
-                <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>Amount</th>
-                      <th>Charge date</th>
-                      <th>Expense item ID</th>
-                      <th width="10px"></th>
-                      <th width="10px"><i id="charges_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
-                  </tr>
-                </thead>
-        
-                <tbody></tbody>
-              </table>              
-        </div>
-        <div id="EXPENSE_ITEMS" class="col s12">
-            <table id="ExpenseItemsTable" class="highlight">
-                <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th width="10px"></th>
-                      <th width="10px"><i id="expense_items_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
-                  </tr>
-                </thead>
-        
-                <tbody></tbody>
-              </table>           
-        </div>
-        <div id="SALES" class="col s12">
-            <table id="SalesTable" class="highlight">
-                <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>Amount</th>
-                      <th>Quantity</th>
-                      <th>Sale date</th>
-                      <th>Warehouse ID</th>
-                      <th width="10px"></th>
-                      <th width="10px"><i id="sales_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
-                  </tr>
-                </thead>
-        
-                <tbody></tbody>
-              </table>  
-        </div>
-        <div id="WAREHOUSES" class="col s12">
-            <table id="WarehousesTable" class="highlight">
-                <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th>Quantity</th>
-                      <th>Amount</th>
-                      <th width="10px"></th>
-                      <th width="10px"><i id="warehouses_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
-                  </tr>
-                </thead>
-        
-                <tbody></tbody>
-              </table>  
-        </div>
-      </div>
-      <div id="PROCEDURES" class="col s12">
-        <div class="row">
-          <div class="col s12 m4 offset-m4">
-              <div>
-                <label>
-                  &nbsp;<button id="avgPricesBtn" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Average prices of items</button>
-                </label>
-              </div>
-              <div>
-                <label>
-                  &nbsp;<button id="intersectSalesDatesBtn" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Intersect dates of 2 items sales</button>
-                </label>
-              </div>
-              <div>
-                <label>
-                  &nbsp;<button id="getIncomeExpenseBtn" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Get income and expense</button>
-                </label>
-              </div>
-              <div>
-                <label>
-                  &nbsp;<button id="countIncomeBtn" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Count income</button>
-                </label>
-              </div>
-          </div>
-
-        <div id="inputLayer">
-          
-        </div>  
-      </div>  
+  <div class="row">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s3"><a class="active" href="#CHARGES">CHARGES</a></li>
+        <li class="tab col s3"><a href="#EXPENSE_ITEMS">EXPENSE ITEMS</a></li>
+        <li class="tab col s3"><a href="#SALES">SALES</a></li>
+        <li class="tab col s3"><a href="#WAREHOUSES">WAREHOUSES</a></li>
+        <li class="tab col s3"><a href="#PROCEDURES">PROCEDURES</a></li>
+      </ul>
     </div>
-    <script src=mainWindow.js></script>
-    <script src=proceduresBtnHandler.js></script>
+    <div id="CHARGES" class="col s12">
+      <table id="ChargesTable" class="highlight">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Amount</th>
+            <th>Charge date</th>
+            <th>Expense item ID</th>
+            <th width="10px"></th>
+            <th width="10px"><i id="charges_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
+          </tr>
+        </thead>
+        
+        <tbody></tbody>
+      </table>              
+    </div>
+    <div id="EXPENSE_ITEMS" class="col s12">
+      <table id="ExpenseItemsTable" class="highlight">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th width="10px"></th>
+            <th width="10px"><i id="expense_items_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
+          </tr>
+        </thead>
+        
+        <tbody></tbody>
+      </table>           
+    </div>
+    <div id="SALES" class="col s12">
+      <table id="SalesTable" class="highlight">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Amount</th>
+            <th>Quantity</th>
+            <th>Sale date</th>
+            <th>Warehouse ID</th>
+            <th width="10px"></th>
+            <th width="10px"><i id="sales_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
+          </tr>
+        </thead>
+        
+        <tbody></tbody>
+      </table>  
+    </div>
+    <div id="WAREHOUSES" class="col s12">
+      <table id="WarehousesTable" class="highlight">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th width="10px"></th>
+            <th width="10px"><i id="warehouses_add_button" class="material-icons" onclick="addRowMode(this)">add</i></th>
+          </tr>
+        </thead>
+        
+        <tbody></tbody>
+      </table>  
+    </div>
+    <div id="PROCEDURES" class="col s12">
+      <div class="row">
+        <div class="col s12 m4 offset-m4">
+          <div>
+            <label>
+              &nbsp;<button id="avgPricesBtn" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Average prices of items</button>
+            </label>
+          </div>
+          <div>
+            <label>
+              &nbsp;<button id="intersectSalesDatesBtn" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Intersect dates of 2 items sales</button>
+            </label>
+          </div>
+          <div>
+            <label>
+              &nbsp;<button id="getIncomeExpenseBtn" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Get income and expense</button>
+            </label>
+          </div>
+          <div>
+            <label>
+              &nbsp;<button id="countIncomeBtn" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Count income</button>
+            </label>
+          </div>
+          <div>&nbsp;</div>
+          <div id="inputLayer">
+            
+          </div>  
+        </div>
+      </div> 
+    </div>
+  </div>
+  <script src=mainWindow.js></script>
+  <script src=proceduresBtnHandler.js></script>
 </body>
 </html>

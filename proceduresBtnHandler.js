@@ -5,27 +5,76 @@ document.getElementById("intersectSalesDatesBtn").addEventListener("click", inte
 document.getElementById("getIncomeExpenseBtn").addEventListener("click", getIncomeExpenseBtnHandler);
 document.getElementById("countIncomeBtn").addEventListener("click", countIncomeBtnHandler);
 
+function clearInputLayer() {
+  var inputLayer = document.getElementById('inputLayer');
+  inputLayer.innerHTML = '';
+}
+
 function avgPricesBtnHandler() {
+  clearInputLayer()
   printAvgPrices()
 }
 
 function intersectSalesDatesBtnHandler() {
-  goodId1 = 1
-  goodId2 = 2
-  printIntersectSalesDates(goodId1, goodId2)
-}
-
-function getIncomeExpenseBtnHandler() {
-  console.log(new Date(1995, 11, 17))
-  console.log(new Date())
-  printIncomeExpense(new Date(1995, 11, 17)  ,new Date(2025, 11, 17))
-}
-
-function countIncomeBtnHandler() {
+  var inputLayer = document.getElementById('inputLayer');
+  inputLayer.innerHTML = `<div class="card-content">
+                            <div class="input-field">
+                              <i class="material-icons prefix">local_grocery_store</i>
+                              <input id="goodId1" type="text">
+                              <label for="goodId1">Product id 1</label>
+                            </div>
+                            <div class="input-field">
+                              <i class="material-icons prefix">local_grocery_store</i>
+                              <input id="goodId2" type="text">
+                              <label for="goodId2">Product id 2</label>
+                            </div>
+                          </div>
+                          <div>
+                            <label>
+                              &nbsp;<button onclick="submitIntersectSalesDatesBtnHandler()" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Submit</button>
+                            </label>
+                          </div>`
   
 }
 
+function submitIntersectSalesDatesBtnHandler() {
+  printIntersectSalesDates(document.getElementById('goodId1').value, document.getElementById('goodId2').value)
+  clearInputLayer()
+}
+
+function getIncomeExpenseBtnHandler() {
+  var inputLayer = document.getElementById('inputLayer');
+  inputLayer.innerHTML = `<div class="card-content">
+                            <div class="input-field">
+                              <i class="material-icons prefix">date_range</i>
+                              <input id="date1" type="date">
+                              <label for="date1">Date 1</label>
+                            </div>
+                            <div class="input-field">
+                              <i class="material-icons prefix">date_range</i>
+                              <input id="date2" type="date">
+                              <label for="date2">Date 2</label>
+                            </div>
+                          </div>
+                          <div>
+                            <label>
+                              &nbsp;<button onclick="submitGetIncomeExpenseBtnHandler()" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Submit</button>
+                            </label>
+                          </div>`
+}
+
+function submitGetIncomeExpenseBtnHandler() {
+  printIncomeExpense(document.getElementById('date1').value, document.getElementById('date2').value)
+  clearInputLayer()
+}
+
+function countIncomeBtnHandler() {
+  clearInputLayer()
+  printCountedIncome()
+}
+
 async function printAvgPrices() {
+  
   let connection;
   try {
     connection = await oracledb.getConnection({
@@ -74,7 +123,7 @@ async function printAvgPrices() {
     writeStream.write(dateTime + ':\n')
     result.rows.forEach(line => {
       console.log(line[0])
-      writeStream.write(line[0]+'\n');
+      writeStream.write('\t' + line[0]+'\n');
     });
     
     writeStream.end();
@@ -139,11 +188,11 @@ async function printIntersectSalesDates(goodId1, goodId2) {
     var dateTime = date+' '+time;
     
     writeStream.write(dateTime + ':\n')
-    writeStream.write('Good1 id = ' + goodId1 + 'Good2 id = ' + goodId2 + '\nDates:\n')
+    writeStream.write('\tGood1 id = ' + goodId1 + '; Good2 id = ' + goodId2 + '\n\tDates:\n')
 
     result.rows.forEach(line => {
       console.log(line[0])
-      writeStream.write(line[0]+'\n');
+      writeStream.write('\t\t' + line[0]+'\n');
     });
     
     writeStream.end();
@@ -162,6 +211,8 @@ async function printIntersectSalesDates(goodId1, goodId2) {
 }
 
 async function printIncomeExpense(date1, date2) {
+  console.log(date1)
+  console.log(date2)
   let connection;
   try {
     connection = await oracledb.getConnection({
@@ -186,8 +237,49 @@ async function printIncomeExpense(date1, date2) {
     var dateTime = date+' '+time;
     
     writeStream.write(dateTime + ':\n')
-    writeStream.write('Date1 = ' + date1 + '; Date2 = ' + date2 + '\n')
-    writeStream.write('SALES_SUM = ' + results.outBinds.SALES_SUM + '; CHARGES_SUM = ' + results.outBinds.CHARGES_SUM + '\n');
+
+    writeStream.write('\tDate1 = ' + date1 + '; Date2 = ' + date2 + '\n')
+    writeStream.write('\tSALES_SUM = ' + results.outBinds.SALES_SUM + '; CHARGES_SUM = ' + results.outBinds.CHARGES_SUM + '\n');
+    
+    writeStream.end();
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
+}
+
+async function printCountedIncome() {
+  let connection;
+  try {
+    connection = await oracledb.getConnection({
+      user: config.user,
+      password: config.password,
+      connectionString: config.connectionString
+    });
+
+    const results = await connection.execute(
+      'BEGIN COUNT_INCOME(:RESULT_INCOME); END;',
+      {
+        RESULT_INCOME:  { type: oracledb.NUMBER, dir: oracledb.BIND_OUT }
+      });
+
+    let writeStream = fs.createWriteStream("./procedures_output/counted_income.txt");
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date+' '+time;
+    
+    writeStream.write(dateTime + ':\n')
+
+    writeStream.write('\tRESULT_INCOME = ' + results.outBinds.RESULT_INCOME);
  
     
     writeStream.end();

@@ -42,7 +42,7 @@ function createMainWindow() {
   });
 
   // Build menu from template
-  const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
+  const mainMenu = Menu.buildFromTemplate(menuTemplate);
   // Insert menu
   Menu.setApplicationMenu(mainMenu);
 }
@@ -60,7 +60,7 @@ function createLoginWindow() {
     }
   });
 
-  const loginMenu = Menu.buildFromTemplate(loginMenuTemplate);
+  const loginMenu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(loginMenu);
 
   //load html 
@@ -76,37 +76,16 @@ function createLoginWindow() {
   });
 }
 
-const loginMenuTemplate = [];
-
 // Create menu template
-const mainMenuTemplate = [
-    {
-      label: 'File', 
-      submenu: [
-        {
-          label: 'Count income',
-          click() {
-            // createAddWindow();
-          }
-        },
-        {
-          label: 'Quit',
-          accelerator: process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
-          click() {
-            app.quit();
-          }
-        }
-      ]
-    }
-];
+const menuTemplate = [];
 
 if (process.platform == 'darwin') {
-  mainMenuTemplate.unshift({});
+  menuTemplate.unshift({});
 }
 
 // Add developer tools item
 if (process.env.NODE_ENV !== 'production') {
-  mainMenuTemplate.push({
+  menuTemplate.push({
     label: 'DevTools',
     submenu:[
       {
