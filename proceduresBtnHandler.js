@@ -15,26 +15,65 @@ function avgPricesBtnHandler() {
   printAvgPrices()
 }
 
-function intersectSalesDatesBtnHandler() {
+async function fillSelects(result) {
+  goodId1Select = document.getElementById("goodId1");
+  goodId2Select = document.getElementById("goodId2");
+
+  result.rows.forEach(element => {
+    var option1 = document.createElement('option');
+    var option2 = document.createElement('option');
+    option1.value = option1.text = element;
+    option2.value = option2.text = element;
+    goodId1Select.appendChild(option1);
+    goodId2Select.appendChild(option2);
+  });
+}
+
+async function intersectSalesDatesBtnHandler() {
   var inputLayer = document.getElementById('inputLayer');
   inputLayer.innerHTML = `<div class="card-content">
                             <div class="input-field">
                               <i class="material-icons prefix">local_grocery_store</i>
-                              <input id="goodId1" type="text">
+                              <select id="goodId1"> </select>
                               <label for="goodId1">Product id 1</label>
                             </div>
                             <div class="input-field">
                               <i class="material-icons prefix">local_grocery_store</i>
-                              <input id="goodId2" type="text">
+                              <select id="goodId2"> </select>
                               <label for="goodId2">Product id 2</label>
                             </div>
-                          </div>
-                          <div>
-                            <label>
-                              &nbsp;<button onclick="submitIntersectSalesDatesBtnHandler()" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Submit</button>
-                            </label>
+                            <div>
+                              <label>
+                                &nbsp;<button onclick="submitIntersectSalesDatesBtnHandler()" class="btn deep-orange accent-4 waves-effect waves-light black-text" style="width: 100%;">Submit</button>
+                              </label>
+                            </div>
                           </div>`
-  
+                          
+
+  let connection;
+  try {
+    connection = await oracledb.getConnection({
+      user: config.user,
+      password: config.password,
+      connectionString: config.connectionString
+    });
+
+    const result = await connection.execute('SELECT ID FROM WAREHOUSES');
+    await fillSelects(result)
+    M.FormSelect.init(document.getElementById('goodId1'), {});
+    M.FormSelect.init(document.getElementById('goodId2'), {});
+
+  } catch (err) {
+    console.error(err);
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }            
 }
 
 function submitIntersectSalesDatesBtnHandler() {
