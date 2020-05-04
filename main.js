@@ -5,7 +5,7 @@ const fs = require("fs");
 const {app, ipcMain, BrowserWindow, Menu} = electron;
 
 // Set env
-// process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = 'production';
 
 let mainWindow;
 let loginWindow;

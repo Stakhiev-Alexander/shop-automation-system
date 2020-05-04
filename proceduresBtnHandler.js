@@ -249,9 +249,19 @@ async function printIntersectSalesDates(goodId1, goodId2) {
   }
 }
 
+async function handleWrongInput(message, duration) {
+  M.toast({html: message}, duration);
+}    
+
 async function printIncomeExpense(date1, date2) {
   console.log(date1)
   console.log(date2)
+
+  if (date1 > date2) {
+    handleWrongInput('Dates are incorrect!', 2500)
+    return;
+  }
+
   let connection;
   try {
     connection = await oracledb.getConnection({

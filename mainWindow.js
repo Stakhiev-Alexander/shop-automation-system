@@ -319,6 +319,10 @@ function doneEditMode(r) {
     case 'ChargesTable': 
       const idCT = parseInt(document.getElementById("idCell").innerHTML);
       const amountCT = document.getElementById("amountCell").value;
+      if (amountCT < 1) {
+        updateExpenseItemsTable();
+        return;
+      }
       const chargeDateCT = document.getElementById("chargeDateCell").value;
       const expenseItemCT = document.getElementById("expenseItemCell").value;
       updateValuesInCharges(idCT, amountCT, chargeDateCT, expenseItemCT);
@@ -335,6 +339,10 @@ function doneEditMode(r) {
       const idST = parseInt(document.getElementById("idCell").innerHTML);
       const amountST = document.getElementById("amountCell").value;
       const quantityST = document.getElementById("quantityCell").value;
+      if (amountCT < 1 || quantityST < 1) {
+        updateSalesTable();
+        return;
+      }
       const saleDateST = document.getElementById("saleDateCell").value;
       const warehouseIdST = document.getElementById("warehouseIdCell").value;
       updateValuesInSales(idST, amountST, quantityST, saleDateST, warehouseIdST);
@@ -345,6 +353,10 @@ function doneEditMode(r) {
       const nameWT = document.getElementById("nameCell").value;
       const quantityWT = document.getElementById("quantityCell").value;
       const amountWT = document.getElementById("amountCell").value;
+      if (quantityWT < 1 || amountWT < 1) {
+        updateSalesTable();
+        return;
+      }
       updateValuesInWarehouses(idWT, nameWT, quantityWT, amountWT);
       setTimeout(() => { updateWarehousesTable(); }, 300);
       break;
@@ -690,6 +702,10 @@ function doneAddingRowMode(r) {
   switch(tableId) {
     case 'ChargesTable': 
       const amountCT = document.getElementById("amountCell").value;
+      if (amountCT < 1) {
+        updateExpenseItemsTable();
+        return;
+      }
       const chargeDateCT = document.getElementById("chargeDateCell").value;
       const expenseItemCT = document.getElementById("expenseItemCell").value;
       insertIntoCharges(amountCT, chargeDateCT, expenseItemCT);
@@ -703,6 +719,10 @@ function doneAddingRowMode(r) {
     case 'SalesTable':  
       const amountST = document.getElementById("amountCell").value;
       const quantityST = document.getElementById("quantityCell").value;
+      if (amountCT < 1 || quantityST < 1) {
+        updateSalesTable();
+        return;
+      }
       const saleDateST = document.getElementById("saleDateCell").value;
       const warehouseIdST = document.getElementById("warehouseIdCell").value;
       insertIntoSales(amountST, quantityST, saleDateST, warehouseIdST);
@@ -712,6 +732,10 @@ function doneAddingRowMode(r) {
       const nameWT = document.getElementById("nameCell").value;
       const quantityWT = document.getElementById("quantityCell").value;
       const amountWT = document.getElementById("amountCell").value;
+      if (quantityWT < 1 || amountWT < 1) {
+        updateSalesTable();
+        return;
+      }
       insertIntoWarehouses(nameWT, quantityWT, amountWT);
       setTimeout(() => { updateWarehousesTable(); }, 300);
       break;
