@@ -7,6 +7,12 @@ const {app, ipcMain, BrowserWindow, Menu} = electron;
 // Set env
 process.env.NODE_ENV = 'production';
 
+var dir = './logs';
+
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+
 let mainWindow;
 let loginWindow;
 

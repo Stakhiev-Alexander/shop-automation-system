@@ -5,6 +5,12 @@ document.getElementById("intersectSalesDatesBtn").addEventListener("click", inte
 document.getElementById("getIncomeExpenseBtn").addEventListener("click", getIncomeExpenseBtnHandler);
 document.getElementById("countIncomeBtn").addEventListener("click", countIncomeBtnHandler);
 
+var dir = './procedures_output';
+
+if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+}
+
 function clearInputLayer() {
   var inputLayer = document.getElementById('inputLayer');
   inputLayer.innerHTML = '';
